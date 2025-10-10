@@ -18,6 +18,10 @@ class Specialrat extends Model
         'status',
     ];
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_PENDING = 2;
+    const STATUS_ADOPTED = 3;
+
     protected $casts = [
         'idRefuge' => 'integer',
         'status' => 'integer',
