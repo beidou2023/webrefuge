@@ -43,17 +43,14 @@ Route::middleware(['auth'])->group(function () {
 // ========================= USER =========================
 
 Route::middleware(['auth','role:1'])->group(function () {
-    // Dashboard usuario
     Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     
-    // Perfil
     Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
-    
-    // Adopción
+
     Route::get('/user/adoption/form', [UserController::class, 'showAdoptionForm'])->name('user.adoption.form');
+
     Route::post('/user/adoption/submit', [UserController::class, 'submitAdoption'])->name('user.adoption.submit');
     
-    // Ratas
     Route::get('/user/rats/available', [RatController::class, 'available'])->name('user.rats.available');
     Route::get('/user/rats/special', [RatController::class, 'special'])->name('user.rats.special');
 });
@@ -63,7 +60,14 @@ Route::middleware(['auth','role:1'])->group(function () {
 // ========================= MANAGER =========================
 
 Route::middleware(['auth','role:2'])->group(function () {
+    Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
     
+    Route::post('/manager/rat/add', [ManagerController::class, 'addRat'])->name('manager.rat.add');
+    Route::post('/manager/special-rat/add', [ManagerController::class, 'addSpecialRat'])->name('manager.special-rat.add');
+    
+    Route::post('/manager/request/{id}/process', [ManagerController::class, 'processRequest'])->name('manager.request.process');
+    
+    Route::put('/manager/user/{id}/ban', [ManagerController::class, 'banUser'])->name('manager.user.ban');
 });
 
 // ========================================================
@@ -71,7 +75,14 @@ Route::middleware(['auth','role:2'])->group(function () {
 // ========================= ADMIN =========================
 
 Route::middleware(['auth','role:3'])->group(function () {
+
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
+    Route::put('/admin/user/{id}/toggle-status', [AdminController::class, 'toggleUserStatus'])->name('admin.user.toggle-status');
+    Route::post('/admin/user/{id}/change-role', [AdminController::class, 'changeUserRole'])->name('admin.user.change-role');
+    
+    Route::put('/admin/refuge/{id}/toggle-status', [AdminController::class, 'toggleRefugeStatus'])->name('admin.refuge.toggle-status');
+    Route::post('/admin/refuge/create', [AdminController::class, 'createRefuge'])->name('admin.refuge.create');
 });
 
 // ========================================================

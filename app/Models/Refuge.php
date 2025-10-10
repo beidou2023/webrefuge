@@ -29,4 +29,29 @@ class Refuge extends Model
     {
         return $this->belongsTo(User::class, 'idManager');
     }
+
+    public function specialrats()
+    {
+        return $this->hasMany(Specialrat::class, 'idRefuge');
+    }
+
+    public function arrivals()
+    {
+        return $this->hasMany(Arrival::class, 'idRefuge');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function getTotalRatsAttribute()
+    {
+        return $this->maleCount + $this->femaleCount;
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return $this->status == 1 ? 'Activo' : 'Inactivo';
+    }
 }
