@@ -5,8 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\RatController;
 use App\Http\Controllers\SpecialRatController;
 use App\Http\Controllers\UserController;
+
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -41,8 +43,19 @@ Route::middleware(['auth'])->group(function () {
 // ========================= USER =========================
 
 Route::middleware(['auth','role:1'])->group(function () {
-    Route::post('/user/update', [UserController::class, 'update'])->name('user.update');
-    // otros métodos
+    // Dashboard usuario
+    Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    
+    // Perfil
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
+    
+    // Adopción
+    Route::get('/user/adoption/form', [UserController::class, 'showAdoptionForm'])->name('user.adoption.form');
+    Route::post('/user/adoption/submit', [UserController::class, 'submitAdoption'])->name('user.adoption.submit');
+    
+    // Ratas
+    Route::get('/user/rats/available', [RatController::class, 'available'])->name('user.rats.available');
+    Route::get('/user/rats/special', [RatController::class, 'special'])->name('user.rats.special');
 });
 
 // ========================================================
@@ -50,7 +63,7 @@ Route::middleware(['auth','role:1'])->group(function () {
 // ========================= MANAGER =========================
 
 Route::middleware(['auth','role:2'])->group(function () {
-    Route::post('/manager/add-rat', [ManagerController::class, 'addRat'])->name('manager.addRat');
+    
 });
 
 // ========================================================
@@ -58,7 +71,7 @@ Route::middleware(['auth','role:2'])->group(function () {
 // ========================= ADMIN =========================
 
 Route::middleware(['auth','role:3'])->group(function () {
-    Route::post('/admin/add-shelter', [AdminController::class, 'addShelter'])->name('admin.addShelter');
+    
 });
 
 // ========================================================
