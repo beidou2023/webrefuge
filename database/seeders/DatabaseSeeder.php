@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
             RefugeSeeder::class,
             SpecialratSeeder::class,
             AdoptionrequestSeeder::class,
-            RatSeeder::class,
             ArrivalSeeder::class,
             AdoptiondeliverySeeder::class,
+            RatSeeder::class,
             RatreportSeeder::class,
         ]);
     }
