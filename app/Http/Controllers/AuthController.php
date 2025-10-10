@@ -34,4 +34,35 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login');
     }
+
+    public function showRegister()
+    {
+        return view('auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'firstName' => 'required|string|max:45',
+            'lastName' => 'required|string|max:45',
+            'email' => 'required|email|max:80|unique:users,email',
+            'password' => 'required|string|min:6|max:15|confirmed',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:500',
+        ]);
+
+        $user = User::create([
+            'firstName' => strtoupper($request->firstName),
+            'lastName' => strtoupper($request->lastName),
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'address' => strtoupper($request->address),
+            'role' => 1,       
+            'status' => 2,      
+        ]);
+
+        Auth::login($user);
+        return redirect('/dashboard'); 
+    }
 }
