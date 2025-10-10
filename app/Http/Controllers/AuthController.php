@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use PharIo\Manifest\Author;
 
 class AuthController extends Controller
 {
@@ -109,6 +108,6 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect('/');
+        return redirect('/dashboard');
     }
 }

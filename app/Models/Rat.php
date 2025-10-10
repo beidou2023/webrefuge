@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rat extends Model
 {
+    use HasFactory;
+
     protected $table = 'rats';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'idAdoptiondelivery',
-        'idUser',
+        'idUser', 
         'name',
         'color',
         'sex',
@@ -19,22 +22,18 @@ class Rat extends Model
         'type',
         'adoptedAt',
         'status',
-        'idSpecialrat',
+        'idSpecialrat'
     ];
 
     protected $casts = [
-        'idAdoptiondelivery' => 'integer',
-        'idUser' => 'integer',
-        'ageMonths' => 'integer',
-        'type' => 'integer',
-        'status' => 'integer',
-        'idSpecialrat' => 'integer',
         'adoptedAt' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function adoptionDelivery()
+    public function specialrat()
     {
-        return $this->belongsTo(Adoptiondelivery::class, 'idAdoptiondelivery');
+        return $this->belongsTo(Specialrat::class, 'idSpecialrat');
     }
 
     public function user()
@@ -42,8 +41,20 @@ class Rat extends Model
         return $this->belongsTo(User::class, 'idUser');
     }
 
-    public function specialrat()
+    public function adoptiondelivery()
     {
-        return $this->belongsTo(Specialrat::class, 'idSpecialrat');
+        return $this->belongsTo(Adoptiondelivery::class, 'idAdoptiondelivery');
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 1)
+                    ->whereNull('idUser')
+                    ->whereNull('adoptedAt');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

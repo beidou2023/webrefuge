@@ -2,15 +2,22 @@
 
 @section('section')
 
+<section class="hero-section text-center">
+    <div class="container py-5">
+        <h1 class="display-5 fw-bold text-white">Adopción de Ratas Especiales</h1>
+        <p class="lead text-white-50 mb-0">Conoce a quienes más necesitan un hogar lleno de amor</p>
+    </div>
+</section>
+
 <div class="container py-5">
-    <h1 class="text-center mb-4">Adopción de Ratas Especiales</h1>
+    <h2 class="section-title text-center mb-4">Disponibles para adopción</h2>
     <p class="text-center text-muted mb-5">Selecciona una tarjeta para conocer más detalles</p>
 
     @if($specialRats->count() > 0)
         <div class="row">
             @foreach($specialRats as $rat)
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card shadow-sm border-0 h-100" data-bs-toggle="modal" data-bs-target="#ratModal"
+                    <div class="myth-card h-100 cursor-pointer" data-bs-toggle="modal" data-bs-target="#ratModal"
                          onclick="showRatDetails(
                             '{{ $rat->id }}',
                             '{{ addslashes($rat->name) }}',
@@ -23,9 +30,9 @@
                             '{{ addslashes($rat->refuge->address) }}'
                          )">
                         <div class="position-relative">
-                            <img src="{{ $rat->imgUrl }}" class="card-img-top rat-img" alt="{{ $rat->name }}">
+                            <img src="{{ $rat->imgUrl }}" class="card-img-top rounded-top" alt="{{ $rat->name }}" style="height: 220px; object-fit: cover;">
                             
-                            <span class="badge sex-badge position-absolute top-0 start-0 m-2 {{ $rat->sex == 'M' ? 'bg-primary' : 'bg-danger' }}">
+                            <span class="badge sex-badge position-absolute top-0 start-0 m-2 {{ $rat->sex == 'M' ? 'bg-info' : 'bg-danger' }}">
                                 {{ $rat->sex == 'M' ? '♂ Macho' : '♀ Hembra' }}
                             </span>
                             
@@ -36,12 +43,8 @@
 
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ $rat->name }}</h5>
-
-                            <p class="card-text text-muted mb-1">
-                                <strong>Refugio:</strong> {{ $rat->refuge->name }}
-                            </p>
-
-                            <p class="card-text mb-3">{{ Str::limit($rat->description, 100) }}</p>
+                            <p class="text-muted mb-1"><strong>Refugio:</strong> {{ $rat->refuge->name }}</p>
+                            <p class="mb-3">{{ Str::limit($rat->description, 100) }}</p>
 
                             <div class="mt-auto text-end">
                                 <span class="btn btn-outline-primary btn-sm">Ver detalles</span>
@@ -61,17 +64,19 @@
     @endif
 </div>
 
+<!-- Modal de Detalles -->
 <div class="modal fade" id="ratModal" tabindex="-1" aria-labelledby="ratModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detalles de la Rata</h5>
+        <div class="modal-content rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title section-title" id="ratModalLabel">Detalles de la Rata</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
+
             <div class="modal-body">
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <img id="modalRatImage" src="" class="img-fluid rounded" alt="">
+                        <img id="modalRatImage" src="" class="img-fluid rounded shadow-sm" alt="">
                     </div>
                     <div class="col-md-6">
                         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -87,13 +92,11 @@
                             <p id="modalRatDescription" class="text-muted mb-0"></p>
                         </div>
 
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <h6 class="card-title mb-2">Refugio</h6>
-                                <p class="mb-1"><strong>Nombre:</strong> <span id="modalRefugeName"></span></p>
-                                <p class="mb-1"><strong>Dirección:</strong> <span id="modalRefugeAddress"></span></p>
-                                <p class="mb-0"><strong>Estado:</strong> <span class="text-success">Activo</span></p>
-                            </div>
+                        <div class="material-card mt-3">
+                            <h6 class="mb-2">Refugio</h6>
+                            <p class="mb-1"><strong>Nombre:</strong> <span id="modalRefugeName"></span></p>
+                            <p class="mb-1"><strong>Dirección:</strong> <span id="modalRefugeAddress"></span></p>
+                            <p class="mb-0"><strong>Estado:</strong> <span class="text-success">Activo</span></p>
                         </div>
 
                         <div class="mt-3">
@@ -102,11 +105,10 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="adoptButton">
-                    Solicitar Adopción
-                </button>
+
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="adoptButton">Solicitar Adopción</button>
             </div>
         </div>
     </div>
@@ -129,7 +131,7 @@
 
         const sexBadge = document.getElementById('modalRatSex');
         sexBadge.textContent = sex === 'M' ? '♂ Macho' : '♀ Hembra';
-        sexBadge.className = `badge ${sex === 'M' ? 'bg-primary' : 'bg-danger'} me-1`;
+        sexBadge.className = `badge ${sex === 'M' ? 'bg-info' : 'bg-danger'} me-1`;
 
         const statusBadge = document.getElementById('modalRatStatus');
         const isActive = parseInt(status) === 1;

@@ -7,29 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 
 class Specialrat extends Model
 {
+    use HasFactory;
+
     protected $table = 'specialrats';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'idRefuge',
         'name',
-        'description',
+        'description', 
         'sex',
         'imgUrl',
-        'status',
+        'status'
     ];
 
+    const STATUS_INACTIVE = 0;
     const STATUS_ACTIVE = 1;
-    const STATUS_PENDING = 2;
-    const STATUS_ADOPTED = 3;
+    const STATUS_ADOPTED = 2;
 
-    protected $casts = [
-        'idRefuge' => 'integer',
-        'status' => 'integer',
-    ];
-
-    // Relación con refugio
     public function refuge()
     {
         return $this->belongsTo(Refuge::class, 'idRefuge');
+    }
+
+    public function rat()
+    {
+        return $this->hasOne(Rat::class, 'idSpecialrat');
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 1);
     }
 }
