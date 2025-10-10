@@ -9,11 +9,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class AdminController extends Controller
 {
     public function dashboard()
     {
         $user = Auth::user();
-        return view('users.dashboard', compact('user'));
-    }    
+        return view('admin.dashboard', compact('user'));
+    }   
 }

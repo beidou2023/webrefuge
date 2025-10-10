@@ -2,9 +2,9 @@
 
 @section('section')
 
-<h1>ADMIN</h1>
+<h1>USER</h1>
+
 First Name: {{ $user->firstName }} <br>
 Role: {{ $user->role }}
-
 
 @endsection
