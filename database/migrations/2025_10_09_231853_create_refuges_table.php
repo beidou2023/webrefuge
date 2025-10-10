@@ -6,20 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('refuges', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
+            $table->unsignedMediumInteger('idManager');
+            $table->string('name', 45);
+            $table->string('address', 500);
+            $table->smallInteger('maleCount');
+            $table->smallInteger('femaleCount');
+            $table->unsignedTinyInteger('status')->default(1)->comment('0 inactive\n1 active');
             $table->timestamps();
+
+            $table->foreign('idManager')
+                  ->references('id')
+                  ->on('users')
+                  ->onUpdate('no action')
+                  ->onDelete('no action');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('refuges');

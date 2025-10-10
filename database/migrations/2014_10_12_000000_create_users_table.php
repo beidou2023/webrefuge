@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('address', 500);
             $table->tinyInteger('role')->default(1)->comment('1 user\n2 manager\n3 admin');
             $table->unsignedTinyInteger('status')->default(2)->comment('0 inactive\n1 active\n2 pending\n3 banned');
-            $table->timestamps(); // created_at & updated_at
+            $table->timestamps();
         });
     }
 

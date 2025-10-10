@@ -7,5 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Refuge extends Model
 {
-    use HasFactory;
+    protected $table = 'refuges';
+
+    protected $fillable = [
+        'idManager',
+        'name',
+        'address',
+        'maleCount',
+        'femaleCount',
+        'status',
+    ];
+
+    protected $casts = [
+        'idManager' => 'integer',
+        'maleCount' => 'integer',
+        'femaleCount' => 'integer',
+        'status' => 'integer',
+    ];
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'idManager');
+    }
 }
