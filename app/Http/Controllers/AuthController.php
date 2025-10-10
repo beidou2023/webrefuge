@@ -32,7 +32,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/');
     }
 
     public function showRegister()
@@ -43,12 +43,58 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'firstName' => 'required|string|max:45',
-            'lastName' => 'required|string|max:45',
-            'email' => 'required|email|max:80|unique:users,email',
-            'password' => 'required|string|min:6|max:15|confirmed',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:500',
+            'firstName' => 'required|string|min:3|max:40',
+            'lastName' => 'required|string|min:3|max:40',
+            'email' => [
+                'required',
+                'email',
+                'max:75',
+                function ($attribute, $value, $fail) {
+                    $exists = \App\Models\User::where('email', $value)
+                        ->whereIn('status', [1, 2])
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('Este correo ya está registrado.');
+                    }
+                },
+                function ($attribute, $value, $fail) {
+                    if (!preg_match('/@gmail\.com$/', $value)) {
+                        $fail('El correo debe ser un @gmail.com válido.');
+                    }
+                },
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:20',
+                'confirmed',
+                function ($attribute, $value, $fail) {
+                    if (
+                        !preg_match('/[A-Z]/', $value) ||
+                        !preg_match('/[a-z]/', $value) ||
+                        !preg_match('/[0-9]/', $value) ||
+                        !preg_match('/[\W_]/', $value)
+                    ) {
+                        $fail('La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.');
+                    }
+                },
+            ],
+            'phone' => [
+                'required',
+                'regex:/^[67][0-9]{7}$/',
+            ],
+            'address' => 'required|string|min:3|max:495',
+        ],
+        [],
+        [
+            'firstName' => 'nombre',
+            'lastName' => 'apellido',
+            'email' => 'correo electrónico',
+            'password' => 'contraseña',
+            'phone' => 'teléfono',
+            'address' => 'dirección',
         ]);
 
         $user = User::create([
@@ -58,11 +104,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'address' => strtoupper($request->address),
-            'role' => 1,       
-            'status' => 2,      
+            'role' => 1,        
+            'status' => 2,
         ]);
 
         Auth::login($user);
-        return redirect('/dashboard'); 
+        return redirect('/');
     }
 }
