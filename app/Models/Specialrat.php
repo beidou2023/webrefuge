@@ -7,5 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Specialrat extends Model
 {
-    use HasFactory;
+    protected $table = 'specialrats';
+
+    protected $fillable = [
+        'idRefuge',
+        'name',
+        'description',
+        'sex',
+        'imgUrl',
+        'status',
+    ];
+
+    protected $casts = [
+        'idRefuge' => 'integer',
+        'status' => 'integer',
+    ];
+
+    // Relación con refugio
+    public function refuge()
+    {
+        return $this->belongsTo(Refuge::class, 'idRefuge');
+    }
 }

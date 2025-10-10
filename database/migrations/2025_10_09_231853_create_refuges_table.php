@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('address', 500);
             $table->smallInteger('maleCount');
             $table->smallInteger('femaleCount');
-            $table->unsignedTinyInteger('status')->default(1)->comment('0 inactive\n1 active');
+            $table->unsignedTinyInteger('status')->default(1)->comment('0 inactive / 1 active');
             $table->timestamps();
 
             $table->foreign('idManager')

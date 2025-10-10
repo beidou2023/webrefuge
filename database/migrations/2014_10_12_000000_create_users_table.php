@@ -15,8 +15,8 @@ return new class extends Migration
             $table->char('password', 60);
             $table->string('phone', 20);
             $table->string('address', 500);
-            $table->tinyInteger('role')->default(1)->comment('1 user\n2 manager\n3 admin');
-            $table->unsignedTinyInteger('status')->default(2)->comment('0 inactive\n1 active\n2 pending\n3 banned');
+            $table->tinyInteger('role')->default(1)->comment('1 user / 2 manager / 3 admin');
+            $table->unsignedTinyInteger('status')->default(2)->comment('0 inactive / 1 active / 2 pending / 3 banned');
             $table->timestamps();
         });
     }
