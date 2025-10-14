@@ -11,11 +11,12 @@ return new class extends Migration
         Schema::create('adoptionrequests', function (Blueprint $table) {
             $table->mediumIncrements('id');
             $table->unsignedMediumInteger('idUser');
+            $table->unsignedMediumInteger('idSpecialRat')->nullable();
             $table->string('imgUrl', 255);
             $table->string('reason', 100);
             $table->string('experience', 500);
-            $table->unsignedSmallInteger('quantityExpected');
-            $table->tinyInteger('couple')->comment('1 Yes / 2 No');
+            $table->unsignedSmallInteger('quantityExpected')->default(0);
+            $table->tinyInteger('couple')->comment('1 Yes / 2 No')->default(2);
             $table->unsignedMediumInteger('aprovedBy')->nullable();
             $table->string('contactTravel', 255)->nullable();
             $table->string('contactReturn', 255)->nullable();
@@ -39,6 +40,12 @@ return new class extends Migration
                   ->on('users')
                   ->onUpdate('no action')
                   ->onDelete('no action');
+
+            $table->foreign('idSpecialRat')
+                ->references('id')
+                ->on('specialrats') 
+                ->onUpdate('no action')
+                ->onDelete('no action');
         });
     }
 

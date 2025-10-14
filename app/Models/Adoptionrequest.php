@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Adoptionrequest extends Model
 {
+    use HasFactory;
+
     protected $table = 'adoptionrequests';
 
     protected $fillable = [
         'idUser',
         'imgUrl',
         'reason',
+        'idSpecialRat',
         'experience',
         'quantityExpected',
         'couple',
@@ -31,6 +34,7 @@ class Adoptionrequest extends Model
     protected $casts = [
         'idUser' => 'integer',
         'aprovedBy' => 'integer',
+        'idSpecialRat' => 'integer',
         'quantityExpected' => 'integer',
         'couple' => 'integer',
         'noReturn' => 'integer',
@@ -49,5 +53,17 @@ class Adoptionrequest extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'aprovedBy');
+    }
+
+    public function havePending($idUser)
+    {
+        return $this->where('idUser', $idUser)
+                    ->where('status', 2)
+                    ->exists();
+    }
+
+    public function specialRat()
+    {
+        return $this->belongsTo(Rat::class, 'idSpecialRat');
     }
 }

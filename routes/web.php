@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdoptionRequestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\RatController;
+use App\Http\Controllers\RatReportController;
 use App\Http\Controllers\SpecialRatController;
 use App\Http\Controllers\UserController;
+
 
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -53,6 +56,17 @@ Route::middleware(['auth','role:1'])->group(function () {
     
     Route::get('/user/rats/available', [RatController::class, 'available'])->name('user.rats.available');
     Route::get('/user/rats/special', [RatController::class, 'special'])->name('user.rats.special');
+
+    Route::post('/adoption', [AdoptionRequestController::class, 'store'])->name('adoption.store')->middleware('auth');
+
+    Route::post('/adoption/special', [AdoptionRequestController::class, 'storeSpecial'])->name('adoption.special.store')->middleware('auth');
+
+    Route::put('/profile', [UserController::class, 'update'])->name('profile.update')->middleware('auth');
+
+    Route::put('/rats/rename', [RatController::class, 'rename'])->name('rats.rename')->middleware('auth');
+
+
+    Route::post('/rats/report', [RatReportController::class, 'report'])->name('rats.report')->middleware('auth');
 });
 
 // ========================================================

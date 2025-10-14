@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rat;
 use App\Models\Specialrat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RatController extends Controller
 {
@@ -72,20 +73,41 @@ class RatController extends Controller
 
     public function rename(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'rat_id' => 'required|exists:rats,id',
-            'new_name' => 'required|string|max:45'
+            'name' => 'required|string|max:50',
+            'color' => 'nullable|string|max:30',
+            'sex' => 'required|in:M,F',
+            'ageMonths' => 'nullable|integer|min:1|max:36',
         ]);
 
-        $rat = Rat::findOrFail($request->rat_id);
-        
-        if ($rat->idUser != auth()->id()) {
-            abort(403, 'No tienes permisos para renombrar esta rata');
+        try {
+            $rat = Rat::findOrFail($validated['rat_id']);
+            
+            if ($rat->idUser !== Auth::id()) {
+                return redirect()->back()
+                    ->with('error', 'No tienes permiso para modificar esta rata.')
+                    ->with('open_rename_modal', true)
+                    ->with('rename_rat_id', $validated['rat_id']);
+            }
+
+            $rat->update([
+                'name' => $validated['name'],
+                'color' => $validated['color'],
+                'sex' => $validated['sex'],
+                'ageMonths' => $validated['ageMonths'],
+            ]);
+
+            return redirect()->back()->with('successEditRat', 'Rata actualizada correctamente.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Error al actualizar la rata: ' . $e->getMessage()])
+                ->withInput()
+                ->with('open_rename_modal', true)
+                ->with('rename_rat_id', $validated['rat_id']);
         }
-
-        $rat->name = $request->new_name;
-        $rat->save();
-
-        return redirect()->back()->with('success', 'Rata renombrada correctamente');
     }
+
+
 }
