@@ -113,43 +113,257 @@
             </div>
 
             {{-- Sección Solicitudes --}}
-            <div id="section-solicitudes" class="d-none">
-                <h3 class="fw-bold mb-4">Solicitudes de Adopción Pendientes</h3>
-                @if($pendingRequests->count() > 0)
-                    @foreach($pendingRequests as $request)
-                        <div class="card mb-3 shadow-sm">
-                            <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start">
-                                <div class="flex-grow-1 mb-2 mb-md-0">
-                                    <h5>Solicitud #{{ $request->id }}</h5>
-                                    <p class="mb-1"><strong>Usuario:</strong> {{ $request->user->email }}</p>
-                                    <p class="mb-1"><strong>Motivo:</strong> {{ $request->reason }}</p>
-                                    <p class="mb-1"><strong>Experiencia:</strong> {{ Str::limit($request->experience, 100) }}</p>
-                                    <p class="mb-1"><strong>Cantidad esperada:</strong> {{ $request->quantityExpected }} ratas</p>
-                                    <p class="mb-1"><strong>Teléfono de contacto:</strong> {{ $request->contactTravel ?? 'No especificado' }}</p>
-                                    <p class="mb-0"><small class="text-muted">Solicitado: {{ $request->created_at->format('d/m/Y H:i') }}</small></p>
+<div id="section-solicitudes" class="d-none">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">Solicitudes de Adopción Pendientes</h3>
+        <span class="badge bg-warning text-dark fs-6">{{ $normalRequests->count() + $specialRequests->count() }} pendientes</span>
+    </div>
+
+    {{-- Pestañas para Normal/Especial --}}
+    <ul class="nav nav-tabs mb-4" id="requestsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="normal-tab" data-bs-toggle="tab" data-bs-target="#normal" type="button" role="tab">
+                🐭 Normales 
+                <span class="badge bg-primary ms-1">{{ $normalRequests->count() }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="special-tab" data-bs-toggle="tab" data-bs-target="#special" type="button" role="tab">
+                ⭐ Especiales 
+                <span class="badge bg-warning ms-1">{{ $specialRequests->count() }}</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="requestsTabContent">
+        
+        {{-- Pestaña Solicitudes Normales --}}
+        <div class="tab-pane fade show active" id="normal" role="tabpanel">
+            @if($normalRequests->count() > 0)
+                @foreach($normalRequests as $request)
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-circle"></i> 
+                                Solicitud #{{ $request->id }} - Adopción Normal
+                            </h5>
+                            <span class="badge bg-secondary">Normal</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <h6>👤 Información del Solicitante</h6>
+                                        <p class="mb-1"><strong>Nombre:</strong> {{ $request->user->firstName }} {{ $request->user->lastName }}</p>
+                                        <p class="mb-1"><strong>Email:</strong> {{ $request->user->email }}</p>
+                                        <p class="mb-1"><strong>Teléfono:</strong> {{ $request->user->phone ?? 'No registrado' }}</p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h6>📋 Detalles de la Solicitud</h6>
+                                        <p class="mb-1"><strong>Motivo:</strong> {{ $request->reason }}</p>
+                                        <p class="mb-1"><strong>Experiencia:</strong> {{ $request->experience }}</p>
+                                        <p class="mb-1"><strong>Cantidad esperada:</strong> {{ $request->quantityExpected }} ratas</p>
+                                        <p class="mb-1"><strong>Tipo:</strong> 
+                                            @if($request->couple == 1) Pareja 
+                                            @elseif($request->couple == 0) Solo machos 
+                                            @else Solo hembras 
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h6>📞 Contactos de Emergencia</h6>
+                                        <p class="mb-1"><strong>En viajes:</strong> {{ $request->contactTravel }}</p>
+                                        <p class="mb-1"><strong>Para devolución:</strong> {{ $request->contactReturn }}</p>
+                                    </div>
+
+                                    @if($request->hasPets)
+                                        <div class="alert alert-info">
+                                            <h6>🐾 Mascotas Actuales</h6>
+                                            <p class="mb-0">{{ $request->petsInfo ?? 'No especificó información' }}</p>
+                                        </div>
+                                    @endif
                                 </div>
-                                <div class="btn-group-vertical">
-                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST">
+
+                                <div class="col-md-4 d-flex flex-column h-100">
+                                    @if($request->imgUrl)
+                                        <div class="mb-3">
+                                            <h6>🏠 Foto de la Jaula</h6>
+                                            <img src="{{ asset('images/users/CR4.jpg') }}"
+                                                class="img-fluid rounded shadow-sm mb-2"
+                                                alt="Rata {{ $rat->name }}"
+                                                style="max-height: 200px; width: 100%; object-fit: cover;">
+                                            <small class="text-muted">Hábitat preparado por el solicitante</small>
+                                        </div>
+                                    @endif
+
+                                    <div class="card bg-light mt-auto">
+                                        <div class="card-body">
+                                            <h6>✅ Compromisos Aceptados</h6>
+                                            <ul class="list-unstyled small mb-0">
+                                                <li>{{ $request->noReturn ? '✓' : '✗' }} No devolución</li>
+                                                <li>{{ $request->care ? '✓' : '✗' }} Cuidado adecuado</li>
+                                                <li>{{ $request->followUp ? '✓' : '✗' }} Seguimiento</li>
+                                                <li>{{ $request->canPayVet ? '✓' : '✗' }} Gastos veterinarios</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    Solicitado: {{ $request->created_at->format('d/m/Y H:i') }}
+                                </small>
+                                <div class="btn-group">
+                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST" class="d-inline">
                                         @csrf
+                                        @method('PUT')
                                         <input type="hidden" name="action" value="approve">
-                                        <button type="submit" class="btn btn-success btn-sm mb-1">Aprobar</button>
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-check-lg"></i> Aprobar
+                                        </button>
                                     </form>
-                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST">
+                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST" class="d-inline">
                                         @csrf
+                                        @method('PUT')
                                         <input type="hidden" name="action" value="reject">
-                                        <button type="submit" class="btn btn-danger btn-sm">Rechazar</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-x-lg"></i> Rechazar
+                                        </button>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                @else
-                    <div class="alert alert-success shadow-sm">
-                        <h5>No hay solicitudes pendientes</h5>
-                        <p class="mb-0">Todas las solicitudes han sido procesadas.</p>
                     </div>
-                @endif
-            </div>
+                @endforeach
+            @else
+                <div class="alert alert-success text-center py-4">
+                    <i class="bi bi-check-circle display-4 text-success mb-3"></i>
+                    <h4>¡No hay solicitudes normales pendientes!</h4>
+                    <p class="mb-0">Todas las solicitudes de adopción normal han sido procesadas.</p>
+                </div>
+            @endif
+        </div>
+
+        {{-- Pestaña Solicitudes Especiales --}}
+        <div class="tab-pane fade" id="special" role="tabpanel">
+            @if($specialRequests->count() > 0)
+                @foreach($specialRequests as $request)
+                    <div class="card mb-4 shadow-sm border-warning">
+                        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-star-fill"></i> 
+                                Solicitud #{{ $request->id }} - Rata Especial
+                            </h5>
+                            <span class="badge bg-dark">Especial</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    {{-- Información de la Rata Especial --}}
+                                    @if($request->specialRat)
+                                        <div class="alert alert-warning">
+                                            <h6>⭐ Rata Especial Solicitada</h6>
+                                            <p class="mb-1"><strong>Nombre:</strong> {{ $request->specialRat->name }}</p>
+                                            <p class="mb-1"><strong>Descripción:</strong> {{ $request->specialRat->description }}</p>
+                                            <p class="mb-0"><strong>Necesidades especiales:</strong> {{ $request->specialRat->special_needs ?? 'No especificado' }}</p>
+                                        </div>
+                                    @endif
+
+                                    <div class="mb-3">
+                                        <h6>👤 Información del Solicitante</h6>
+                                        <p class="mb-1"><strong>Nombre:</strong> {{ $request->user->firstName }} {{ $request->user->lastName }}</p>
+                                        <p class="mb-1"><strong>Email:</strong> {{ $request->user->email }}</p>
+                                        <p class="mb-1"><strong>Teléfono:</strong> {{ $request->user->phone ?? 'No registrado' }}</p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h6>📋 Detalles de la Solicitud Especial</h6>
+                                        <p class="mb-1"><strong>Motivo específico:</strong> {{ $request->reason }}</p>
+                                        <p class="mb-1"><strong>Experiencia con necesidades especiales:</strong> {{ $request->experience }}</p>
+                                        <p class="mb-1"><strong>Cantidad:</strong> 1 rata especial</p>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <h6>📞 Contactos de Emergencia</h6>
+                                        <p class="mb-1"><strong>En viajes:</strong> {{ $request->contactTravel }}</p>
+                                        <p class="mb-1"><strong>Para devolución:</strong> {{ $request->contactReturn }}</p>
+                                    </div>
+
+                                    @if($request->hasPets)
+                                        <div class="alert alert-info">
+                                            <h6>🐾 Mascotas Actuales</h6>
+                                            <p class="mb-0">{{ $request->petsInfo ?? 'No especificó información' }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="col-md-4 d-flex flex-column h-100">
+                                    @if($request->imgUrl)
+                                        <div class="mb-3">
+                                            <h6>🏠 Foto de la Jaula</h6>
+                                            <img src="{{ asset('images/users/AF5.jpg') }}"
+                                                class="img-fluid rounded shadow-sm mb-2"
+                                                alt="Rata {{ $rat->name }}"
+                                                style="max-height: 200px; width: 100%; object-fit: cover;">
+                                            <small class="text-muted">Hábitat preparado por el solicitante</small>
+                                        </div>
+                                    @endif
+
+                                    <div class="card bg-light mt-auto">
+                                        <div class="card-body">
+                                            <h6>✅ Compromisos Aceptados</h6>
+                                            <ul class="list-unstyled small mb-0">
+                                                <li>{{ $request->noReturn ? '✓' : '✗' }} No devolución</li>
+                                                <li>{{ $request->care ? '✓' : '✗' }} Cuidado adecuado</li>
+                                                <li>{{ $request->followUp ? '✓' : '✗' }} Seguimiento</li>
+                                                <li>{{ $request->canPayVet ? '✓' : '✗' }} Gastos veterinarios</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    Solicitado: {{ $request->created_at->format('d/m/Y H:i') }}
+                                </small>
+                                <div class="btn-group">
+                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="approve">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-check-lg"></i> Aprobar
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('manager.request.process', $request->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-x-lg"></i> Rechazar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-star display-4 text-info mb-3"></i>
+                    <h4>No hay solicitudes especiales pendientes</h4>
+                    <p class="mb-0">Todas las solicitudes de adopción especial han sido procesadas.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
 
             {{-- Sección Usuarios --}}
             <div id="section-usuarios" class="d-none">

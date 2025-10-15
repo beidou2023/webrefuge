@@ -14,7 +14,7 @@ class RatSeeder extends Seeder
             [
                 'idAdoptiondelivery' => 1,
                 'idUser' => 4,
-                'name' => 'RAMBO',
+                'name' => 'BOLITA',
                 'color' => 'GRIS',
                 'sex' => 'M',
                 'ageMonths' => 5,

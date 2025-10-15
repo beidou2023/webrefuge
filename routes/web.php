@@ -82,6 +82,11 @@ Route::middleware(['auth','role:2'])->group(function () {
     Route::post('/manager/request/{id}/process', [ManagerController::class, 'processRequest'])->name('manager.request.process');
     
     Route::put('/manager/user/{id}/ban', [ManagerController::class, 'banUser'])->name('manager.user.ban');
+
+
+    Route::put('/manager/request/{id}/process', [ManagerController::class, 'processRequest'])
+     ->name('manager.request.process')
+     ->middleware('auth');
 });
 
 // ========================================================

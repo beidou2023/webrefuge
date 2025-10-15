@@ -33,7 +33,6 @@ class AdoptionRequestController extends Controller
                 $validated['imgUrl'] = $imagePath;
             }
 
-            // Datos automáticos
             $validated['idUser'] = Auth::id();
             $validated['status'] = 2;
 
@@ -42,7 +41,6 @@ class AdoptionRequestController extends Controller
             return redirect()->route('user.dashboard')->with('successRequest', 'Solicitud de adopción enviada correctamente.');
 
         } catch (\Exception $e) {
-            // Redireccionar con errores y datos antiguos
             return redirect()->back()
                 ->withErrors($e->getMessage())
                 ->withInput();
@@ -62,10 +60,10 @@ class AdoptionRequestController extends Controller
             'contactReturn' => 'required|string|max:255',
             'petsInfo' => 'nullable|string|max:500',
             'hasPets' => 'required|boolean',
-            'noReturn' => 'required|boolean',
-            'care' => 'required|boolean',
-            'followUp' => 'required|boolean',
-            'canPayVet' => 'required|boolean',
+            'noReturn' => 'boolean',
+            'care' => 'boolean',
+            'followUp' => 'boolean',
+            'canPayVet' => 'boolean',
         ]);
 
         if ($request->hasFile('imgUrl')) {
