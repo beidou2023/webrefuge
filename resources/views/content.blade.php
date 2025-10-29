@@ -3,7 +3,7 @@
 
 <nav class="navbar navbar-expand-lg custom-navbar mb-0">
     <div class="container">
-        <a class="navbar-brand text-white fw-bold" href="{{ route('index') }}">MY REFUGE</a>
+        <a class="navbar-brand text-white fw-bold" href="{{ route('index') }}">MI REFUGIO</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@
         <div class="row">
 
             <div class="col-md-4 mb-4">
-                <h5 class="fw-bold mb-3">My Refuge</h5>
+                <h5 class="fw-bold mb-3">Mi Refugio</h5>
                 <p>Un espacio dedicado a la adopción y cuidado de ratas rescatadas. Juntos podemos hacer la diferencia.</p>
             </div>
 
@@ -94,7 +94,7 @@
 
         <hr class="border-light mt-4">
         <div class="text-center">
-            <small>&copy; {{ date('Y') }} My Refuge. Todos los derechos reservados.</small>
+            <small>&copy; {{ date('Y') }} Mi Refugio. Todos los derechos reservados.</small>
         </div>
     </div>
 </footer>

@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row align-items-center min-vh-100">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Bienvenido a MyRefuge</h1>
+                <h1 class="display-4 fw-bold mb-4">Bienvenido a MiRefugio</h1>
                 <p class="lead mb-4">Un santuario dedicado al rescate, cuidado y adopción responsable de ratas domésticas. Descubre la inteligencia y cariño que estas maravillosas criaturas pueden ofrecer.</p>
                 <div class="hero-buttons">
                     <a href="#about" class="btn btn-primary btn-lg me-3">Conócenos</a>

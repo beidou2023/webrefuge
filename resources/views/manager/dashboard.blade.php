@@ -87,8 +87,7 @@
                         @foreach($specialRats as $rat)
                             <div class="col">
                                 <div class="card shadow-sm h-100">
-                                    <img src="{{ $rat->imgUrl ? asset('storage/' . $rat->imgUrl) : 'https://placekitten.com/301/200' }}" 
-                                         class="card-img-top" alt="{{ $rat->name }}">
+                                    <img src="{{ asset('images/example.jpg') }}" class="card-img-top" alt="{{ $rat->name }}">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ $rat->name }}</h5>
                                         <p>
